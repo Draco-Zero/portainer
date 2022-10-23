@@ -12,6 +12,8 @@ import { ApplicationSummaryWidget } from '@/react/kubernetes/applications/Detail
 import { withReactQuery } from '@/react-tools/withReactQuery';
 import { withUIRouter } from '@/react-tools/withUIRouter';
 import { withUserProvider } from '@/react/test-utils/withUserProvider';
+import { withCurrentUser } from '@/react-tools/withCurrentUser';
+import { PlacementsDatatable } from '@/react/kubernetes/applications/ItemView/PlacementsDatatable';
 
 export const componentsModule = angular
   .module('portainer.kubernetes.react.components', [])
@@ -93,4 +95,8 @@ export const componentsModule = angular
       withUIRouter(withReactQuery(withUserProvider(ApplicationSummaryWidget))),
       []
     )
+  )
+  .component(
+    'kubernetesApplicationPlacementsDatatable',
+    r2a(withCurrentUser(PlacementsDatatable), ['dataset', 'onRefresh'])
   ).name;
