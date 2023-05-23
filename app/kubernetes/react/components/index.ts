@@ -7,13 +7,18 @@ import { StorageAccessModeSelector } from '@/react/kubernetes/cluster/ConfigureV
 import { NamespaceAccessUsersSelector } from '@/react/kubernetes/namespaces/AccessView/NamespaceAccessUsersSelector';
 import { CreateNamespaceRegistriesSelector } from '@/react/kubernetes/namespaces/CreateView/CreateNamespaceRegistriesSelector';
 import { KubeApplicationAccessPolicySelector } from '@/react/kubernetes/applications/CreateView/KubeApplicationAccessPolicySelector';
+import {
+  KubeServicesForm,
+  kubeServicesValidation,
+} from '@/react/kubernetes/applications/CreateView/application-services/KubeServicesForm';
 import { KubeApplicationDeploymentTypeSelector } from '@/react/kubernetes/applications/CreateView/KubeApplicationDeploymentTypeSelector';
 import { ApplicationSummaryWidget } from '@/react/kubernetes/applications/DetailsView';
 import { withReactQuery } from '@/react-tools/withReactQuery';
 import { withUIRouter } from '@/react-tools/withUIRouter';
-import { withUserProvider } from '@/react/test-utils/withUserProvider';
+import { withFormValidation } from '@/react-tools/withFormValidation';
+import { withCurrentUser } from '@/react-tools/withCurrentUser';
 
-export const componentsModule = angular
+export const ngModule = angular
   .module('portainer.kubernetes.react.components', [])
   .component(
     'ingressClassDatatable',
@@ -90,7 +95,17 @@ export const componentsModule = angular
   .component(
     'applicationSummaryWidget',
     r2a(
-      withUIRouter(withReactQuery(withUserProvider(ApplicationSummaryWidget))),
+      withUIRouter(withReactQuery(withCurrentUser(ApplicationSummaryWidget))),
       []
     )
-  ).name;
+  );
+
+export const componentsModule = ngModule.name;
+
+withFormValidation(
+  ngModule,
+  withUIRouter(withCurrentUser(withReactQuery(KubeServicesForm))),
+  'kubeServicesForm',
+  ['values', 'onChange', 'loadBalancerEnabled', 'appName', 'selector'],
+  kubeServicesValidation
+);
